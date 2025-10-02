@@ -1,0 +1,21 @@
+nelmio_api_doc:
+    documentation:
+        servers:
+            - url: http://127.0.0.1:8000
+
+        info:
+            title: "Mon API Symfony"
+            description: "Documentation auto-générée avec Swagger"
+            version: "1.0.0"
+        components:
+            securitySchemes:
+                Bearer:
+                    type: http
+                    scheme: bearer
+                    bearerFormat: JWT
+        security:
+            - Bearer: []
+    areas:
+        default:
+            path_patterns:
+                - ^/api  # ✅ Tes routes commencent par /admin

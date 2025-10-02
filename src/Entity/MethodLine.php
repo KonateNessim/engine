@@ -1,0 +1,101 @@
+<?php
+
+namespace App\Entity;
+
+use App\Repository\MethodLineRepository;
+use Doctrine\ORM\Mapping as ORM;
+
+
+#[ORM\Entity(repositoryClass: MethodLineRepository::class)]
+class MethodLine
+{
+  #[ORM\Id, ORM\GeneratedValue, ORM\Column(type: 'integer')]
+  private ?int $id = null;
+
+  #[ORM\ManyToOne(targetEntity: VersionMethod::class)]
+  private VersionMethod $versionMethod;
+
+  #[ORM\Column(type: 'integer')]
+  private int $orderIndex = 1;
+
+  #[ORM\Column(type: 'text', nullable: true)]
+  private ?string $expression = null;
+
+  #[ORM\Column(length: 100, nullable: true)]
+  private ?string $resultVariable = null;
+
+  #[ORM\Column(length: 50, nullable: true)]
+  private ?string $lineType = 'calculation';
+
+  #[ORM\Column(type: 'json', nullable: true)]
+  private ?array $metadata = null;
+
+  #[ORM\Column(type: 'datetime_immutable')]
+  private \DateTimeImmutable $createdAt;
+
+  public function __construct()
+  {
+    $this->createdAt = new \DateTimeImmutable();
+  }
+
+  public function getId(): ?int
+  {
+    return $this->id;
+  }
+  public function getVersionMethod(): VersionMethod
+  {
+    return $this->versionMethod;
+  }
+  public function setVersionMethod(VersionMethod $v): void
+  {
+    $this->versionMethod = $v;
+  }
+  public function getOrderIndex(): int
+  {
+    return $this->orderIndex;
+  }
+  public function setOrderIndex(int $i): void
+  {
+    $this->orderIndex = $i;
+  }
+  public function getExpression(): ?string
+  {
+    return $this->expression;
+  }
+  public function setExpression(?string $e): void
+  {
+    $this->expression = $e;
+  }
+  public function getResultVariable(): ?string
+  {
+    return $this->resultVariable;
+  }
+  public function setResultVariable(?string $r): void
+  {
+    $this->resultVariable = $r;
+  }
+  public function getLineType(): ?string
+  {
+    return $this->lineType;
+  }
+  public function setLineType(?string $t): void
+  {
+    $this->lineType = $t;
+  }
+  public function getMetadata(): ?array
+  {
+    return $this->metadata;
+  }
+  public function setMetadata(?array $m): void
+  {
+    $this->metadata = $m;
+  }
+  public function getCreatedAt(): \DateTimeImmutable
+  {
+    return $this->createdAt;
+  }
+  public function setCreatedAt(\DateTimeImmutable $d): void
+  {
+    $this->createdAt = $d;
+  }
+}
