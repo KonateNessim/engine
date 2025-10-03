@@ -19,6 +19,9 @@ class ConditionEvaluator
       OperatorType::LessOrEqual => $left <= $right,
       OperatorType::In => in_array($left, (array)$right, true),
       OperatorType::NotIn => !in_array($left, (array)$right, true),
+      OperatorType::LParen, // "("
+      OperatorType::RParen  // ")"
+      => true,
       default => true
     };
   }

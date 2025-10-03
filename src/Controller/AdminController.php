@@ -12,6 +12,7 @@ use App\Enum\EngineStatus;
 use OpenApi\Attributes as OA;
 
 #[Route('/api/admin')]
+#[OA\Tag(name: 'admin')]
 class AdminController extends AbstractController
 {
   public function __construct(private EntityManagerInterface $em) {}
@@ -27,6 +28,7 @@ class AdminController extends AbstractController
         type: "object",
         properties: [
           new OA\Property(property: "name", type: "string"),
+          new OA\Property(property: "branch", type: "integer"),
           new OA\Property(property: "description", type: "string", nullable: true),
           new OA\Property(property: "status", type: "string", enum: ["DRAFT", "ACTIVE", "DEPRECATED", "ARCHIVED"])
         ]
@@ -42,49 +44,14 @@ class AdminController extends AbstractController
     $e = new EngineBranch();
     $e->setName($d['name'] ?? 'Engine');
     $e->setDescription($d['description'] ?? null);
-    $e->setBranch(1);
+    $e->setBranch((int)($d['branch'] ?? null));
     $e->setStatus(EngineStatus::from($d['status'] ?? 'DRAFT'));
     $this->em->persist($e);
     $this->em->flush();
     return $this->json(['id' => $e->getId()]);
   }
 
-  #[Route('/argument', methods: ['POST'])]
-  #[OA\Post(
-    path: "/admin/argument",
-    summary: "Créer un argument",
-    requestBody: new OA\RequestBody(
-      required: true,
-      content: new OA\JsonContent(
-        type: "object",
-        properties: [
-          new OA\Property(property: "name", type: "string"),
-          new OA\Property(property: "label", type: "string", nullable: true),
-          new OA\Property(property: "type", type: "string", example: "float"),
-          new OA\Property(property: "defaultValue", type: "string", nullable: true),
-          new OA\Property(property: "isRequired", type: "boolean"),
-          new OA\Property(property: "constraints", type: "string", nullable: true)
-        ]
-      )
-    ),
-    responses: [
-      new OA\Response(response: 200, description: "Identifiant de l'argument créé")
-    ]
-  )]
-  public function createArgument(Request $r): JsonResponse
-  {
-    $d = json_decode($r->getContent(), true) ?? [];
-    $a = new Argument();
-    $a->setName($d['name']);
-    $a->setLabel($d['label'] ?? null);
-    $a->setType($d['type'] ?? 'float');
-    $a->setDefaultValue($d['defaultValue'] ?? null);
-    $a->setIsRequired((bool)($d['isRequired'] ?? true));
-    $a->setConstraints($d['constraints'] ?? null);
-    $this->em->persist($a);
-    $this->em->flush();
-    return $this->json(['id' => $a->getId()]);
-  }
+  
 
   #[Route('/method', methods: ['POST'])]
   #[OA\Post(
@@ -274,7 +241,7 @@ class AdminController extends AbstractController
       $pl = new Place();
       $pl->setLine($ln);
       $pl->setOrderIndex((int)($p['order'] ?? $i + 1));
-      $pl->setValue($p['val'] ?? null);
+      $pl->setLiteralValue($p['val'] ?? null);
       if (isset($p['op'])) $pl->setOperator(\App\Enum\OperatorType::from($p['op']));
       if (isset($p['argId'])) $pl->setArgument($this->em->find(Argument::class, (int)$p['argId']));
       $this->em->persist($pl);

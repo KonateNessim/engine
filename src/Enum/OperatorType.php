@@ -16,6 +16,8 @@ enum OperatorType: string
   case NotIn = 'NOT_IN';
   case Plus = '+';
   case Minus = '-';
-  case Times = '*';
+  case Multiply = '*';
   case Divide = '/';
+  case LParen = '(';
+  case RParen = ')';
 }

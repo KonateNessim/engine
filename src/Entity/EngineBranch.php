@@ -14,7 +14,7 @@ class EngineBranch extends BaseEntity
 {
 
   #[ORM\Column(length: 255)]
-  private ?string $branch;
+  private ?int $branch;
 
   #[ORM\Column(length: 255)]
   private string $name;
@@ -25,11 +25,11 @@ class EngineBranch extends BaseEntity
   #[ORM\Column(type: 'string', enumType: EngineStatus::class)]
   private EngineStatus $status = EngineStatus::DRAFT;
 
-  public function getBranch(): ?string
+  public function getBranch(): ?int
   {
     return $this->branch;
   }
-  public function setBranch(?string $b): void
+  public function setBranch(?int $b): void
   {
     $this->branch = $b;
   }

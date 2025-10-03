@@ -34,7 +34,7 @@ class VersionCompiler
           'order' => $p->getOrderIndex(),
           'op' => $p->getOperator()?->value,
           'arg' => $p->getArgument()?->getName(),
-          'val' => $p->getValue()
+          'val' => $p->getLiteralValue()
         ], $places),
         'groups' => $conditions,
         'metadata' => $ln->getMetadata(),

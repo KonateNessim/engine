@@ -5,7 +5,6 @@ namespace App\Entity;
 use App\Repository\MethodRequirementRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-
 #[ORM\Entity(repositoryClass: MethodRequirementRepository::class)]
 class MethodRequirement
 {
@@ -22,24 +21,27 @@ class MethodRequirement
   private string $code;
 
   #[ORM\ManyToOne(targetEntity: DataType::class)]
-  private DataType $dataType;
+  private ?DataType $dataType = null;
 
   #[ORM\ManyToOne(targetEntity: ItemType::class)]
-  private ItemType $itemType;
+  private ?ItemType $itemType = null;
 
   #[ORM\Column(type: 'boolean')]
   private bool $isRequired = true;
 
   #[ORM\Column(type: 'json', nullable: true)]
-  private ?array $defaultValue = null;
+  private mixed $defaultValue = null; // Peut être string, int, bool, array, etc.
 
   #[ORM\Column(type: 'json', nullable: true)]
-  private ?array $validationRules = null;
+  private ?array $validationRules = null; // ex: {"min":18,"max":80}
+
+  // -------- Getters / Setters --------
 
   public function getId(): ?int
   {
     return $this->id;
   }
+
   public function getMethod(): Method
   {
     return $this->method;
@@ -48,6 +50,7 @@ class MethodRequirement
   {
     $this->method = $m;
   }
+
   public function getLabel(): string
   {
     return $this->label;
@@ -56,6 +59,7 @@ class MethodRequirement
   {
     $this->label = $l;
   }
+
   public function getCode(): string
   {
     return $this->code;
@@ -64,22 +68,25 @@ class MethodRequirement
   {
     $this->code = $c;
   }
-  public function getDataType(): DataType
+
+  public function getDataType(): ?DataType
   {
     return $this->dataType;
   }
-  public function setDataType(DataType $d): void
+  public function setDataType(?DataType $d): void
   {
     $this->dataType = $d;
   }
-  public function getItemType(): ItemType
+
+  public function getItemType(): ?ItemType
   {
     return $this->itemType;
   }
-  public function setItemType(ItemType $i): void
+  public function setItemType(?ItemType $i): void
   {
     $this->itemType = $i;
   }
+
   public function isRequired(): bool
   {
     return $this->isRequired;
@@ -88,11 +95,13 @@ class MethodRequirement
   {
     $this->isRequired = $r;
   }
-  public function getDefaultValue(): ?array
+
+  public function getDefaultValue(): mixed
   {
     return $this->defaultValue;
   }
-  public function setDefaultValue(?array $v): void
+
+  public function setDefaultValue(mixed $v): void
   {
     $this->defaultValue = $v;
   }

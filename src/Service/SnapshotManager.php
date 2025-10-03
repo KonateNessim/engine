@@ -32,7 +32,7 @@ class SnapshotManager
         'expression' => $line->getExpression(),
         'metadata' => $line->getMetadata()
       ],
-      'places' => array_map(fn($p) => ['order' => $p->getOrderIndex(), 'op' => $p->getOperator()?->value, 'arg' => $p->getArgument()?->getName(), 'val' => $p->getValue()], $places),
+      'places' => array_map(fn($p) => ['order' => $p->getOrderIndex(), 'op' => $p->getOperator()?->value, 'arg' => $p->getArgument()?->getName(), 'val' => $p->getLiteralValue()], $places),
       'groups' => $groupJson
     ];
     $ver = new MethodLineVersion();
