@@ -12,9 +12,6 @@ class MethodLine
   #[ORM\Id, ORM\GeneratedValue, ORM\Column(type: 'integer')]
   private ?int $id = null;
 
-  #[ORM\ManyToOne(targetEntity: VersionMethod::class)]
-  private VersionMethod $versionMethod;
-
   #[ORM\Column(type: 'integer')]
   private int $orderIndex = 1;
 
@@ -33,6 +30,9 @@ class MethodLine
   #[ORM\Column(type: 'datetime_immutable')]
   private \DateTimeImmutable $createdAt;
 
+  #[ORM\ManyToOne(inversedBy: 'methodLines')]
+  private ?Method $method = null;
+
   public function __construct()
   {
     $this->createdAt = new \DateTimeImmutable();
@@ -42,14 +42,7 @@ class MethodLine
   {
     return $this->id;
   }
-  public function getVersionMethod(): VersionMethod
-  {
-    return $this->versionMethod;
-  }
-  public function setVersionMethod(VersionMethod $v): void
-  {
-    $this->versionMethod = $v;
-  }
+
   public function getOrderIndex(): int
   {
     return $this->orderIndex;
@@ -97,5 +90,17 @@ class MethodLine
   public function setCreatedAt(\DateTimeImmutable $d): void
   {
     $this->createdAt = $d;
+  }
+
+  public function getMethod(): ?Method
+  {
+      return $this->method;
+  }
+
+  public function setMethod(?Method $method): static
+  {
+      $this->method = $method;
+
+      return $this;
   }
 }

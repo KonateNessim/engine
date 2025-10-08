@@ -41,7 +41,9 @@ class ArgumentController extends ApiInterface
   {
     $all = $repository->findAll();
 
-    return $this->responseData($all, 'group1');
+
+
+    return $this->responseData($all, 'group1',true);
   }
 
   #[Route('/{id}', methods: ['GET'])]
@@ -72,9 +74,9 @@ class ArgumentController extends ApiInterface
     return $this->json(['id' => $e->getId()]);
   }
 
-  #[Route('', methods: ['POST'])]
+  #[Route('/create', methods: ['POST'])]
   #[OA\Post(
-    path: "/admin/argument",
+    path: "/admin/argument/create",
     summary: "Créer un argument",
     requestBody: new OA\RequestBody(
       required: true,

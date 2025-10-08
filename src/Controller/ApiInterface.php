@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Service\PaginationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,7 +16,8 @@ class ApiInterface extends AbstractController
     public function __construct(
         private SerializerInterface $serializer,
         private ValidatorInterface $validator,
-        protected EntityManagerInterface $em
+        protected EntityManagerInterface $em,
+        private PaginationService $paginate
     ) {}
 
     private int $statusCode = 200;
@@ -40,7 +42,8 @@ class ApiInterface extends AbstractController
     ): JsonResponse {
         $context = $group ? [AbstractNormalizer::GROUPS => $group] : [];
 
-        if ($paginate && $data instanceof PaginationInterface) {
+        if ($paginate && $data ) {
+            $data = $this->paginate->paginate($data);
             $items = $this->serializer->serialize($data->getItems(), 'json', $context);
 
             return new JsonResponse([

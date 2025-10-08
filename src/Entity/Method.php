@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Common\BaseEntity;
 use App\Repository\MethodRepository;
@@ -36,6 +38,18 @@ class Method extends BaseEntity
 
   #[ORM\Column(type: 'boolean')]
   private bool $isImmutable = false;
+
+  /**
+   * @var Collection<int, MethodLine>
+   */
+  #[ORM\OneToMany(targetEntity: MethodLine::class, mappedBy: 'method')]
+  private Collection $methodLines;
+
+  public function __construct()
+  {
+      parent::__construct();
+      $this->methodLines = new ArrayCollection();
+  }
 
   public function getEngine(): ?EngineBranch
   {
@@ -116,5 +130,35 @@ class Method extends BaseEntity
   public function setIsImmutable(bool $i): void
   {
     $this->isImmutable = $i;
+  }
+
+  /**
+   * @return Collection<int, MethodLine>
+   */
+  public function getMethodLines(): Collection
+  {
+      return $this->methodLines;
+  }
+
+  public function addMethodLine(MethodLine $methodLine): static
+  {
+      if (!$this->methodLines->contains($methodLine)) {
+          $this->methodLines->add($methodLine);
+          $methodLine->setMethod($this);
+      }
+
+      return $this;
+  }
+
+  public function removeMethodLine(MethodLine $methodLine): static
+  {
+      if ($this->methodLines->removeElement($methodLine)) {
+          // set the owning side to null (unless already changed)
+          if ($methodLine->getMethod() === $this) {
+              $methodLine->setMethod(null);
+          }
+      }
+
+      return $this;
   }
 }

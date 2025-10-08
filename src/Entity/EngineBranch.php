@@ -7,22 +7,26 @@ use App\Entity\Common\BaseEntity;
 use App\Enum\EngineStatus;
 use App\Repository\EngineBranchRepository;
 use Random\Engine;
-
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: EngineBranchRepository::class)]
 class EngineBranch extends BaseEntity
 {
 
   #[ORM\Column(length: 255)]
+  #[Groups(['method'])]
   private ?int $branch;
 
   #[ORM\Column(length: 255)]
+  #[Groups(['method'])]
   private string $name;
 
   #[ORM\Column(type: 'text', nullable: true)]
+  #[Groups(['method'])]
   private ?string $description = null;
 
   #[ORM\Column(type: 'string', enumType: EngineStatus::class)]
+  #[Groups(['method'])]
   private EngineStatus $status = EngineStatus::DRAFT;
 
   public function getBranch(): ?int

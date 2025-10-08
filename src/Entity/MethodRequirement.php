@@ -4,26 +4,33 @@ namespace App\Entity;
 
 use App\Repository\MethodRequirementRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: MethodRequirementRepository::class)]
 class MethodRequirement
 {
   #[ORM\Id, ORM\GeneratedValue, ORM\Column(type: 'integer')]
+  #[Groups(["group_requirements"])]
   private ?int $id = null;
 
   #[ORM\ManyToOne(targetEntity: Method::class)]
+  #[Groups(["group_requirements"])]
   private Method $method;
 
   #[ORM\Column(length: 255)]
+  #[Groups(["group_requirements"])]
   private string $label;
 
   #[ORM\Column(length: 100)]
+  #[Groups(["group_requirements"])]
   private string $code;
 
   #[ORM\ManyToOne(targetEntity: DataType::class)]
+  #[Groups(["group_requirements"])]
   private ?DataType $dataType = null;
 
   #[ORM\ManyToOne(targetEntity: ItemType::class)]
+  #[Groups(["group_requirements"])]
   private ?ItemType $itemType = null;
 
   #[ORM\Column(type: 'boolean')]

@@ -13,8 +13,8 @@ class MethodLineVersion extends BaseEntity
   #[ORM\ManyToOne(targetEntity: MethodLine::class)]
   private MethodLine $line;
 
-  #[ORM\Column(type: 'integer')]
-  private int $versionNumber;
+  #[ORM\Column(length: 255)]
+  private string $versionNumber;
 
   #[ORM\Column(type: 'json')]
   private array $snapshotJson = [];
@@ -27,11 +27,11 @@ class MethodLineVersion extends BaseEntity
   {
     $this->line = $l;
   }
-  public function getVersionNumber(): int
+  public function getVersionNumber(): string
   {
     return $this->versionNumber;
   }
-  public function setVersionNumber(int $v): void
+  public function setVersionNumber(string $v): void
   {
     $this->versionNumber = $v;
   }

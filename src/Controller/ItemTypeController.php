@@ -12,9 +12,9 @@ use OpenApi\Attributes as OA;
 
 #[Route('/api/admin/itemtype')]
 #[OA\Tag(name: 'ItemType')]
-class ItemTypeController extends AbstractController
+class ItemTypeController extends ApiInterface
 {
-  public function __construct(private EntityManagerInterface $em) {}
+ // public function __construct(private EntityManagerInterface $em) {}
 
   #[Route('', methods: ['GET'])]
   #[OA\Get(
@@ -39,7 +39,7 @@ class ItemTypeController extends AbstractController
   public function list(): JsonResponse
   {
     $all = $this->em->getRepository(ItemType::class)->findAll();
-    return $this->json(array_map(fn($e) => ['id' => $e->getId()], $all));
+    return $this->responseData($all, 'group1', true);
   }
 
   #[Route('/{id}', methods: ['GET'])]
@@ -70,7 +70,7 @@ class ItemTypeController extends AbstractController
     return $this->json(['id' => $e->getId()]);
   }
 
-  #[Route('', methods: ['POST'])]
+  #[Route('/create', methods: ['POST'])]
   #[OA\Post(
     summary: "Créer un ItemType",
     requestBody: new OA\RequestBody(

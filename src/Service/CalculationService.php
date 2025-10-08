@@ -6,17 +6,22 @@ use App\DTO\CalcRequest;
 use App\DTO\CalcResult;
 use App\DTO\LineResult;
 use App\Enum\ExecutionStatus;
+use App\Repository\MethodRepository;
 
 class CalculationService
 {
   public function __construct(
     private CompiledVersionCache $cache,
-    private LineExecutor $executor
+    private LineExecutor $executor,
+    private MethodInputValidator $validator,
+    private MethodRepository $methodRepository
   ) {}
 
   public function calculate(CalcRequest $req): CalcResult
   {
-    $compiled = $this->cache->get($req->methodId, $req->versionNumber);
+    $this->validator->validate($this->methodRepository->find($req->methodId), $req->inputs);
+
+    $compiled = $this->cache->get($req->methodId);
 
     $ctx = $req->inputs;
     $messages = [];

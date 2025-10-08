@@ -4,8 +4,8 @@ nelmio_api_doc:
             - url: http://127.0.0.1:8000
 
         info:
-            title: "Mon API Symfony"
-            description: "Documentation auto-générée avec Swagger"
+            title: "Mon moteur de calculs"
+            description: "API pour exécuter des méthodes de calcul définies dynamiquement."
             version: "1.0.0"
         components:
             securitySchemes:

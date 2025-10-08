@@ -4,24 +4,29 @@ namespace App\Entity;
 
 use App\Repository\DataTypeRepository;
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: DataTypeRepository::class)]
 class DataType
 {
   #[ORM\Id, ORM\GeneratedValue, ORM\Column(type: 'integer')]
+  #[Groups(["group1"])]
   private ?int $id = null;
 
   #[ORM\Column(length: 100)]
+  #[Groups(["group1"])]
   private string $name;
 
   #[ORM\Column(length: 50)]
+  #[Groups(["group1"])]
   private string $phpType;
 
   #[ORM\Column(length: 50)]
+  #[Groups(["group1"])]
   private string $jsType;
 
   #[ORM\Column(type: 'json', nullable: true)]
+  #[Groups(["group1"])]
   private ?array $constraints = null;
 
   public function getId(): ?int

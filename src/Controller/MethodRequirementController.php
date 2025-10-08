@@ -15,9 +15,9 @@ use OpenApi\Attributes as OA;
 
 #[Route('/api/admin/requirement')]
 #[OA\Tag(name: 'MethodRequirement')]
-class MethodRequirementController extends AbstractController
+class MethodRequirementController extends ApiInterface
 {
-  public function __construct(private EntityManagerInterface $em) {}
+  //public function __construct(private EntityManagerInterface $em) {}
 
   #[Route('', methods: ['GET'])]
   #[OA\Get(
@@ -42,7 +42,8 @@ class MethodRequirementController extends AbstractController
   public function list(): JsonResponse
   {
     $all = $this->em->getRepository(MethodRequirement::class)->findAll();
-    return $this->json(array_map(fn($e) => ['id' => $e->getId()], $all));
+    return $this->responseData($all, 'group_requirements', true);
+    
   }
 
   #[Route('/{id}', methods: ['GET'])]
@@ -73,7 +74,7 @@ class MethodRequirementController extends AbstractController
     return $this->json(['id' => $e->getId()]);
   }
 
-  #[Route('', methods: ['POST'])]
+  #[Route('/create', methods: ['POST'])]
   #[OA\Post(
     path: "/api/admin/requirement",
     summary: "Créer un MethodRequirement",

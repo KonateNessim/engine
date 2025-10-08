@@ -13,9 +13,9 @@ use OpenApi\Attributes as OA;
 
 #[Route('/api/admin/engineBranch')]
 #[OA\Tag(name: 'EngineBranch')]
-class EngineBranchController extends AbstractController
+class EngineBranchController extends ApiInterface
 {
-  public function __construct(private EntityManagerInterface $em) {}
+  //public function __construct(private EntityManagerInterface $em) {}
 
   #[Route('', methods: ['GET'])]
   #[OA\Get(
@@ -41,7 +41,7 @@ class EngineBranchController extends AbstractController
   public function list(): JsonResponse
   {
     $all = $this->em->getRepository(EngineBranch::class)->findAll();
-    return $this->json(array_map(fn($e) => ['id' => $e->getId()], $all));
+    return $this->responseData($all, 'method', true);
   }
 
   #[Route('/{id}', methods: ['GET'])]
@@ -73,7 +73,7 @@ class EngineBranchController extends AbstractController
     return $this->json(['id' => $e->getId()]);
   }
 
-  #[Route('', methods: ['POST'])]
+  #[Route('/create', methods: ['POST'])]
   #[OA\Post(
     path: "/admin/engineBranch",
     summary: "Créer un moteur",

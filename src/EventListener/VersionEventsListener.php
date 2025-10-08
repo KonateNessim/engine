@@ -5,30 +5,62 @@ namespace App\EventListener;
 use Doctrine\ORM\Event\PostPersistEventArgs;
 use Doctrine\ORM\Event\PostUpdateEventArgs;
 use App\Service\{CompiledVersionCache, SnapshotManager};
-use App\Entity\{VersionMethod, MethodLine, Place, ConditionGroup, Condition};
+use App\Entity\{Method, MethodLine, Place, ConditionGroup, Condition};
 
+/**
+ * Listener Doctrine pour gérer les snapshots et le cache du moteur.
+ * 
+ * ⚙️ Fonctionnement :
+ * - À chaque création ou mise à jour d'une ligne (ou ses sous-éléments),
+ *   un snapshot est automatiquement créé.
+ * - Le cache compilé associé à la méthode est invalidé.
+ */
 class VersionEventsListener
 {
-  public function __construct(private CompiledVersionCache $cache, private SnapshotManager $snap) {}
+  public function __construct(
+    private CompiledVersionCache $cache,
+    private SnapshotManager $snap
+  ) {}
+
   public function postPersist(PostPersistEventArgs $args): void
   {
     $this->handle($args->getObject());
   }
+
   public function postUpdate(PostUpdateEventArgs $args): void
   {
     $this->handle($args->getObject());
   }
-  private function handle(object $e): void
+
+  private function handle(object $entity): void
   {
-    if ($e instanceof MethodLine || $e instanceof Place || $e instanceof ConditionGroup || $e instanceof Condition) {
-      $line = $e instanceof MethodLine ? $e : ($e->getLine() ?? $e->getGroup()->getLine());
+    // 🔸 Cas 1 : Si c’est une ligne ou un élément de ligne (place, condition, etc.)
+    if (
+      $entity instanceof MethodLine ||
+      $entity instanceof Place ||
+      $entity instanceof ConditionGroup ||
+      $entity instanceof Condition
+    ) {
+
+      // Je récupère la ligne concernée
+      $line = $entity instanceof MethodLine
+        ? $entity
+        : ($entity->getLine() ?? $entity->getGroup()?->getLine());
+
       if ($line) {
         $this->snap->createSnapshot($line);
-        $vm = $line->getVersionMethod();
-        if ($vm) $this->cache->invalidate($vm->getMethod()->getId(), $vm->getVersionNumber());
+
+        // Invalide le cache compilé de la méthode
+        $method = $line->getMethod();
+        if ($method instanceof Method) {
+          $this->cache->invalidate($method->getId());
+        }
       }
-    } elseif ($e instanceof VersionMethod) {
-      $this->cache->invalidate($e->getMethod()->getId(), $e->getVersionNumber());
+    }
+
+    // 🔸 Cas 2 : Si c’est directement une méthode (on la purge du cache)
+    elseif ($entity instanceof Method) {
+      $this->cache->invalidate($entity->getId());
     }
   }
 }

@@ -12,9 +12,9 @@ use OpenApi\Attributes as OA;
 
 #[Route('/api/admin/datatype')]
 #[OA\Tag(name: 'DataType')]
-class DataTypeController extends AbstractController
+class DataTypeController extends ApiInterface
 {
-  public function __construct(private EntityManagerInterface $em) {}
+  //public function __construct(private EntityManagerInterface $em) {}
 
   #[Route('', methods: ['GET'])]
   #[OA\Get(
@@ -39,7 +39,7 @@ class DataTypeController extends AbstractController
   public function list(): JsonResponse
   {
     $all = $this->em->getRepository(DataType::class)->findAll();
-    return $this->json(array_map(fn($e) => ['id' => $e->getId()], $all));
+    return $this->responseData($all, 'group1', true);
   }
 
   #[Route('/{id}', methods: ['GET'])]

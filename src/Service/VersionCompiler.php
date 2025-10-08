@@ -2,44 +2,64 @@
 
 namespace App\Service;
 
-use App\Entity\{VersionMethod, MethodLine, Place, ConditionGroup, Condition};
 use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\{Method, MethodLine, Place, ConditionGroup, Condition};
 
 class VersionCompiler
 {
   public function __construct(private EntityManagerInterface $em) {}
-  public function compile(VersionMethod $vm): array
+
+  public function compile(Method $method): array
   {
-    $lines = $this->em->getRepository(MethodLine::class)->findBy(['versionMethod' => $vm], ['orderIndex' => 'ASC']);
+    $lines = $this->em->getRepository(MethodLine::class)
+      ->findBy(['method' => $method], ['orderIndex' => 'ASC']);
+
     $compiled = [];
+
     foreach ($lines as $ln) {
-      $places = $this->em->getRepository(Place::class)->findBy(['line' => $ln], ['orderIndex' => 'ASC']);
-      $groups = $this->em->getRepository(ConditionGroup::class)->findBy(['line' => $ln], ['orderIndex' => 'ASC']);
+      $places = $this->em->getRepository(Place::class)
+        ->findBy(['line' => $ln], ['orderIndex' => 'ASC']);
+
+      $groups = $this->em->getRepository(ConditionGroup::class)
+        ->findBy(['line' => $ln], ['orderIndex' => 'ASC']);
+
       $conditions = [];
       foreach ($groups as $g) {
-        $conds = $this->em->getRepository(Condition::class)->findBy(['group' => $g], ['orderIndex' => 'ASC']);
-        $conditions[] = ['group' => $g->getId(), 'logic' => $g->getLogicOperator(), 'conditions' => array_map(fn($c) => [
-          'left' => $c->getLeftArgument()?->getName(),
-          'op' => $c->getOperator()->value,
-          'right' => $c->getRightValue()
-        ], $conds)];
+        $conds = $this->em->getRepository(Condition::class)
+          ->findBy(['group' => $g], ['orderIndex' => 'ASC']);
+
+        $conditions[] = [
+          'group' => $g->getId(),
+          'logic' => $g->getLogicOperator(),
+          'conditions' => array_map(fn($c) => [
+            'left' => $c->getLeftArgument()?->getName(),
+            'op'   => $c->getOperator()->value,
+            'right' => $c->getRightValue(),
+          ], $conds),
+        ];
       }
+
       $compiled[] = [
-        'id' => $ln->getId(),
-        'order' => $ln->getOrderIndex(),
-        'result' => $ln->getResultVariable(),
-        'type' => $ln->getLineType(),
+        'id'        => $ln->getId(),
+        'order'     => $ln->getOrderIndex(),
+        'result'    => $ln->getResultVariable(),
+        'type'      => $ln->getLineType(),
         'expression' => $ln->getExpression(),
-        'places' => array_map(fn($p) => [
+        'places'    => array_map(fn($p) => [
           'order' => $p->getOrderIndex(),
-          'op' => $p->getOperator()?->value,
-          'arg' => $p->getArgument()?->getName(),
-          'val' => $p->getLiteralValue()
+          'op'    => $p->getOperator()?->value,
+          'arg'   => $p->getArgument()?->getName(),
+          'val'   => $p->getLiteralValue(),
         ], $places),
-        'groups' => $conditions,
-        'metadata' => $ln->getMetadata(),
+        'groups'    => $conditions,
+        'metadata'  => $ln->getMetadata(),
       ];
     }
-    return ['versionId' => $vm->getId(), 'methodId' => $vm->getMethod()->getId(), 'version' => $vm->getVersionNumber(), 'lines' => $compiled];
+
+    return [
+      'methodId' => $method->getId(),
+      'code'     => $method->getCode(),
+      'lines'    => $compiled,
+    ];
   }
 }
