@@ -31,7 +31,6 @@ class AdminController extends AbstractController
         private SnapshotManager $snapshots
     ) {}
 
-    // ✅ --- Créer un moteur ---
     #[Route('/engine', methods: ['POST'])]
     #[OA\Post(summary: "Créer un moteur (EngineBranch)")]
     #[OA\RequestBody(
@@ -63,7 +62,6 @@ class AdminController extends AbstractController
         return $this->json(['id' => $e->getId(), 'message' => 'Engine created']);
     }
 
-    // ✅ --- Créer une méthode ---
     #[Route('/method', methods: ['POST'])]
     #[OA\Post(summary: "Créer une méthode associée à un moteur")]
     #[OA\RequestBody(
@@ -104,7 +102,6 @@ class AdminController extends AbstractController
         return $this->json(['id' => $method->getId(), 'message' => 'Method created']);
     }
 
-    // ✅ --- Ajouter une ligne simple ---
     #[Route('/method/{id}/line', methods: ['POST'])]
     #[OA\Post(summary: "Ajouter une ligne à une méthode")]
     #[OA\RequestBody(
@@ -145,7 +142,6 @@ class AdminController extends AbstractController
         return $this->json(['id' => $line->getId(), 'methodId' => $method->getId()]);
     }
 
-    // ✅ --- Ajouter une ligne complète (places + conditions) ---
     #[Route('/method/{id}/line/full', methods: ['POST'])]
     #[OA\Post(summary: "Ajouter une ligne complète avec places et conditions")]
     #[OA\RequestBody(
@@ -243,7 +239,6 @@ class AdminController extends AbstractController
         return $this->json(['id' => $line->getId()]);
     }
 
-    // ✅ --- Lister snapshots ---
     #[Route('/line/{id}/snapshots', methods: ['GET'])]
     #[OA\Get(summary: "Lister les snapshots d'une ligne")]
     #[OA\Response(response: 200, description: "Liste des snapshots renvoyée")]
@@ -262,7 +257,6 @@ class AdminController extends AbstractController
         ], $snaps));
     }
 
-    // ✅ --- Rollback ---
     #[Route('/line/{id}/rollback/{version}', methods: ['POST'])]
     #[OA\Post(summary: "Restaurer une version précédente d'une ligne")]
     #[OA\Response(response: 200, description: "Version restaurée avec succès")]

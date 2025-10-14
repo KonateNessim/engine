@@ -8,6 +8,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Argument;
+use App\Entity\DataType;
+use App\Entity\ItemType;
 use App\Repository\ArgumentRepository;
 use OpenApi\Attributes as OA;
 
@@ -85,7 +87,8 @@ class ArgumentController extends ApiInterface
         properties: [
           new OA\Property(property: "name", type: "string"),
           new OA\Property(property: "label", type: "string", nullable: true),
-          new OA\Property(property: "type", type: "string", example: "float"),
+          new OA\Property(property: "itemType", type: "string"),
+          new OA\Property(property: "dataType", type: "string"),
           new OA\Property(property: "defaultValue", type: "string", nullable: true),
           new OA\Property(property: "isRequired", type: "boolean"),
           new OA\Property(property: "constraints", type: "string", nullable: true)
@@ -102,7 +105,8 @@ class ArgumentController extends ApiInterface
     $a = new Argument();
     $a->setName($d['name']);
     $a->setLabel($d['label'] ?? null);
-    $a->setType($d['type'] ?? 'float');
+    $a->setDataType($this->em->find(DataType::class, $d['dataType']));
+    $a->setItemType($this->em->find(ItemType::class, $d['itemType']));
     $a->setDefaultValue($d['defaultValue'] ?? null);
     $a->setIsRequired((bool)($d['isRequired'] ?? true));
     $a->setConstraints($d['constraints'] ?? null);
@@ -132,7 +136,8 @@ class ArgumentController extends ApiInterface
         properties: [
           new OA\Property(property: "name", type: "string"),
           new OA\Property(property: "label", type: "string", nullable: true),
-          new OA\Property(property: "type", type: "string", example: "float"),
+          new OA\Property(property: "itemType", type: "string"),
+          new OA\Property(property: "dataType", type: "string"),
           new OA\Property(property: "defaultValue", type: "string", nullable: true),
           new OA\Property(property: "isRequired", type: "boolean"),
           new OA\Property(property: "constraints", type: "string", nullable: true)
@@ -164,8 +169,10 @@ class ArgumentController extends ApiInterface
     $d = json_decode($r->getContent(), true) ?? [];
 
     if (isset($d['name'])) $a->setName($d['name']);
+
     if (array_key_exists('label', $d)) $a->setLabel($d['label']);
-    if (isset($d['type'])) $a->setType($d['type']);
+    if (isset($d['itemType'])) $a->setItemType($this->em->find(ItemType::class, $d['itemType']));
+    if (isset($d['dataType'])) $a->setDataType($this->em->find(DataType::class, $d['dataType']));
     if (array_key_exists('defaultValue', $d)) $a->setDefaultValue($d['defaultValue']);
     if (isset($d['isRequired'])) $a->setIsRequired((bool)$d['isRequired']);
     if (array_key_exists('constraints', $d)) $a->setConstraints($d['constraints']);

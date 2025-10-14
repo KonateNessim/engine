@@ -22,7 +22,6 @@ class ApiController extends AbstractController
     private EntityManagerInterface $em
   ) {}
 
-  // ✅ --- CALCUL PAR ID ---
   #[Route('/calculate', methods: ['POST'])]
   #[OA\Post(
     path: "/api/admin/calculate",
@@ -76,7 +75,6 @@ class ApiController extends AbstractController
     }
   }
 
-  // ✅ --- CALCUL PAR CODE ---
   #[Route('/calculate-by-code', methods: ['POST'])]
   #[OA\Post(
     path: "/api/admin/calculate-by-code",
@@ -109,13 +107,11 @@ class ApiController extends AbstractController
     }
 
     $repo = $this->em->getRepository(Method::class);
-//dd(!empty($d['insurerId']));
-    // 🔍 1. Recherche méthode spécifique à un assureur
+
     $method = !empty($d['insurerId'])
       ? $repo->findOneBy(['code' => $d['methodCode'], 'insurer' => (int) $d['insurerId']])
       : null;
 
-    // 🔄 2. Sinon on prend la version globale
     if (!$method) {
       $method = $repo->findOneBy(['code' => $d['methodCode'], 'insurer' => null]);
     }
@@ -142,7 +138,6 @@ class ApiController extends AbstractController
     }
   }
 
-  // 🧩 --- Normalisation des entrées (dates → DateTimeImmutable) ---
   private function normalizeInputs(array $inputs): array
   {
     foreach ($inputs as $k => $v) {

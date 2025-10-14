@@ -6,19 +6,20 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Common\BaseEntity;
 use App\Repository\MethodLineVersionRepository;
 
-
 #[ORM\Entity(repositoryClass: MethodLineVersionRepository::class)]
-class MethodLineVersion extends BaseEntity
+#[ORM\HasLifecycleCallbacks]
+class MethodLineVersion
 {
-  #[ORM\ManyToOne(targetEntity: MethodLine::class)]
-  private MethodLine $line;
+  use BaseEntity;
+  #[ORM\Id, ORM\GeneratedValue, ORM\Column(type: 'integer')] private ?int $id = null;
+  #[ORM\ManyToOne(targetEntity: MethodLine::class)] private MethodLine $line;
+  #[ORM\Column(type: 'integer')] private int $versionNumber;
+  #[ORM\Column(type: 'json')] private array $snapshotJson = [];
 
-  #[ORM\Column(length: 255)]
-  private string $versionNumber;
-
-  #[ORM\Column(type: 'json')]
-  private array $snapshotJson = [];
-
+  public function getId(): ?int
+  {
+    return $this->id;
+  }
   public function getLine(): MethodLine
   {
     return $this->line;
@@ -27,11 +28,11 @@ class MethodLineVersion extends BaseEntity
   {
     $this->line = $l;
   }
-  public function getVersionNumber(): string
+  public function getVersionNumber(): int
   {
     return $this->versionNumber;
   }
-  public function setVersionNumber(string $v): void
+  public function setVersionNumber(int $v): void
   {
     $this->versionNumber = $v;
   }

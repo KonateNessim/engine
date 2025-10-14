@@ -19,7 +19,9 @@ class CalculationService
 
   public function calculate(CalcRequest $req): CalcResult
   {
-    $this->validator->validate($this->methodRepository->find($req->methodId), $req->inputs);
+    $method = $this->methodRepository->find($req->methodId);
+    $this->validator->validate($method, $req->inputs);
+    if (!$method) throw new \RuntimeException('Méthode introuvable');
 
     $compiled = $this->cache->get($req->methodId);
 

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Argument;
 use App\Entity\DataType;
 use App\Entity\ItemType;
 use App\Entity\Method;
@@ -43,7 +44,6 @@ class MethodRequirementController extends ApiInterface
   {
     $all = $this->em->getRepository(MethodRequirement::class)->findAll();
     return $this->responseData($all, 'group_requirements', true);
-    
   }
 
   #[Route('/{id}', methods: ['GET'])]
@@ -83,12 +83,12 @@ class MethodRequirementController extends ApiInterface
       content: new OA\JsonContent(
         type: "object",
         properties: [
-          new OA\Property(property: "method", type: "integer", example: 1, description: "ID de la méthode"),
-          new OA\Property(property: "dataType", type: "integer", example: 2, description: "ID du DataType"),
-          new OA\Property(property: "itemType", type: "integer", example: 3, description: "ID du ItemType"),
           new OA\Property(property: "label", type: "string", example: "Durée du prêt"),
           new OA\Property(property: "code", type: "string", example: "DUREE"),
-          new OA\Property(property: "isRequired", type: "boolean", example: true)
+          new OA\Property(property: "isRequired", type: "boolean", example: false),
+          new OA\Property(property: "validationRules", type: "object", example: ["min" => 18, "max" => 80]),
+          new OA\Property(property: "defaultValue", type: "string", example: "0"),
+          new OA\Property(property: "method", type: "integer", example: 1, description: "ID de la méthode"),
         ]
       )
     ),
@@ -128,11 +128,13 @@ class MethodRequirementController extends ApiInterface
         type: "object",
         properties: [
           new OA\Property(property: "method", type: "integer", example: 1),
-          new OA\Property(property: "dataType", type: "integer", example: 2),
-          new OA\Property(property: "itemType", type: "integer", example: 3),
           new OA\Property(property: "label", type: "string", example: "Durée du prêt"),
           new OA\Property(property: "code", type: "string", example: "DUREE"),
-          new OA\Property(property: "isRequired", type: "boolean", example: false)
+          new OA\Property(property: "isRequired", type: "boolean", example: false),
+          new OA\Property(property: "validationRules", type: "object", example: ["min" => 18, "max" => 80]),
+          new OA\Property(property: "defaultValue", type: "string", example: "0"),
+
+
         ]
       )
     ),
@@ -198,17 +200,11 @@ class MethodRequirementController extends ApiInterface
         case 'method':
           $e->setMethod($this->em->find(Method::class, (int)$val));
           break;
-        case 'dataType':
-          $e->setDataType($this->em->find(DataType::class, (int)$val));
-          break;
-        case 'itemType':
-          $e->setItemType($this->em->find(ItemType::class, (int)$val));
-          break;
         case 'label':
           $e->setLabel($val);
           break;
         case 'code':
-          $e->setCode($val);
+          $e->setCode($this->em->find(Argument::class, (int)$val)->getCode());
           break;
         case 'isRequired':
           $e->setIsRequired((bool)$val);
