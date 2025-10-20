@@ -11,7 +11,7 @@ use App\Entity\EngineBranch;
 use App\Enum\EngineStatus;
 use OpenApi\Attributes as OA;
 
-#[Route('/api/admin/engineBranch')]
+#[Route('/api/engine/engineBranch')]
 #[OA\Tag(name: 'EngineBranch')]
 class EngineBranchController extends ApiInterface
 {

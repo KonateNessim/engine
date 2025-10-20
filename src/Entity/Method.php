@@ -2,41 +2,55 @@
 
 namespace App\Entity;
 
+use App\Entity\Common\TraitEntity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\Common\BaseEntity;
 use App\Repository\MethodRepository;
-
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: MethodRepository::class)]
-class Method extends BaseEntity
+#[ORM\Table(
+    name: 'method',
+    uniqueConstraints: [
+        new ORM\UniqueConstraint(name: 'uniq_code_engine', columns: ['code', 'engine_id'])
+    ]
+)]
+class Method  
 {
+  use TraitEntity;
+
+  #[ORM\Id, ORM\GeneratedValue, ORM\Column(type: 'integer')]
+  private ?int $id = null;
   #[ORM\ManyToOne(targetEntity: EngineBranch::class)]
+  #[Groups(["method"])]
   private ?EngineBranch $engine = null;
 
   #[ORM\Column(length: 255, nullable: true)]
+  #[Groups(["method"])]
   private ?int $insurer = null;
 
-/*   #[ORM\ManyToOne(targetEntity: Method::class)]
-  private ?Method $originMethod = null; */
-
   #[ORM\Column(length: 255)]
+  #[Groups(["method"])]
   private string $name;
 
   #[ORM\Column(length: 100)]
+  #[Groups(["method"])]
   private string $code;
 
   #[ORM\Column(type: 'text', nullable: true)]
+  #[Groups(["method"])]
   private ?string $description = null;
 
   #[ORM\Column(length: 50)]
   private string $returnType = 'float';
 
   #[ORM\Column(length: 50)]
+  #[Groups(["method"])]
   private string $category = 'calculation';
 
   #[ORM\Column(type: 'boolean')]
+  #[Groups(["method"])]
   private bool $isImmutable = false;
 
   /**
@@ -45,11 +59,16 @@ class Method extends BaseEntity
   #[ORM\OneToMany(targetEntity: MethodLine::class, mappedBy: 'method')]
   private Collection $methodLines;
 
+  #[ORM\Column(length: 255, nullable: true)]
+  #[Groups(["method"])]
+  private ?string $publicName = null;
+
   public function __construct()
   {
-      parent::__construct();
+     /*  parent::__construct(); */
       $this->methodLines = new ArrayCollection();
   }
+  public function getId(): ?int {return $this->id;}
 
   public function getEngine(): ?EngineBranch
   {
@@ -68,15 +87,6 @@ class Method extends BaseEntity
   {
     $this->insurer = $i;
   }
-
-/*   public function getOriginMethod(): ?Method
-  {
-    return $this->originMethod;
-  }
-  public function setOriginMethod(?Method $m): void
-  {
-    $this->originMethod = $m;
-  } */
 
   public function getName(): string
   {
@@ -158,6 +168,18 @@ class Method extends BaseEntity
               $methodLine->setMethod(null);
           }
       }
+
+      return $this;
+  }
+
+  public function getPublicName(): ?string
+  {
+      return $this->publicName;
+  }
+
+  public function setPublicName(?string $publicName): static
+  {
+      $this->publicName = $publicName;
 
       return $this;
   }

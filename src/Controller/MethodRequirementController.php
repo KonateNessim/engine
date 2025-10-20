@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
 use OpenApi\Attributes as OA;
 
-#[Route('/api/admin/requirement')]
+#[Route('/api/engine/requirement')]
 #[OA\Tag(name: 'MethodRequirement')]
 class MethodRequirementController extends ApiInterface
 {

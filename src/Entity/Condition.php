@@ -5,6 +5,7 @@ use App\Repository\ConditionRepository;
 use App\Enum\OperatorType;
 
 #[ORM\Entity(repositoryClass: ConditionRepository::class)]
+#[ORM\Table(name: 'engine_condition')]
 class Condition
 {
   #[ORM\Id, ORM\GeneratedValue, ORM\Column(type:'integer')] private ?int $id=null;

@@ -2,16 +2,19 @@
 
 namespace App\Entity;
 
+use App\Entity\Common\TraitEntity;
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\Common\BaseEntity;
 use App\Enum\EngineStatus;
 use App\Repository\EngineBranchRepository;
 use Random\Engine;
 use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: EngineBranchRepository::class)]
-class EngineBranch extends BaseEntity
+class EngineBranch 
 {
+use TraitEntity;
+
+#[ORM\Id, ORM\GeneratedValue, ORM\Column(type:'integer')] private ?int $id=null;
 
   #[ORM\Column(length: 255)]
   #[Groups(['method'])]
@@ -28,6 +31,8 @@ class EngineBranch extends BaseEntity
   #[ORM\Column(type: 'string', enumType: EngineStatus::class)]
   #[Groups(['method'])]
   private EngineStatus $status = EngineStatus::DRAFT;
+
+  public function getId(): ?int {return $this->id;}
 
   public function getBranch(): ?int
   {

@@ -7,7 +7,7 @@ use App\Repository\ArgumentRepository;
 class Argument
 {
   #[ORM\Id, ORM\GeneratedValue, ORM\Column(type:'integer')] private ?int $id=null;
-  #[ORM\Column(length:100, unique:true)] private string $name;
+  #[ORM\Column(length:100)] private string $name;
   #[ORM\Column(length:255, nullable:true)] private ?string $label=null;
   #[ORM\ManyToOne(targetEntity: DataType::class)] private ?DataType $dataType=null;
   #[ORM\ManyToOne(targetEntity: ItemType::class)] private ?ItemType $itemType=null;

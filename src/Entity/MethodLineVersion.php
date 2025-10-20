@@ -3,14 +3,15 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\Common\BaseEntity;
+use App\Entity\Common\TraitEntity;
 use App\Repository\MethodLineVersionRepository;
 
 #[ORM\Entity(repositoryClass: MethodLineVersionRepository::class)]
 #[ORM\HasLifecycleCallbacks]
 class MethodLineVersion
 {
-  use BaseEntity;
+  use TraitEntity;
+
   #[ORM\Id, ORM\GeneratedValue, ORM\Column(type: 'integer')] private ?int $id = null;
   #[ORM\ManyToOne(targetEntity: MethodLine::class)] private MethodLine $line;
   #[ORM\Column(type: 'integer')] private int $versionNumber;

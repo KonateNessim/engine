@@ -13,7 +13,7 @@ use App\Entity\ItemType;
 use App\Repository\ArgumentRepository;
 use OpenApi\Attributes as OA;
 
-#[Route('/api/admin/argument')]
+#[Route('/api/engine/argument')]
 #[OA\Tag(name: 'Argument')]
 class ArgumentController extends ApiInterface
 {
