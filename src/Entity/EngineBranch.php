@@ -10,15 +10,17 @@ use Random\Engine;
 use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: EngineBranchRepository::class)]
-class EngineBranch 
+class EngineBranch
 {
-use TraitEntity;
+  use TraitEntity;
 
-#[ORM\Id, ORM\GeneratedValue, ORM\Column(type:'integer')] private ?int $id=null;
+  #[ORM\Id, ORM\GeneratedValue, ORM\Column(type: 'integer')]
+  #[Groups(['method'])]
+  private ?int $id = null;
 
   #[ORM\Column(length: 255)]
   #[Groups(['method'])]
-  private ?int $branch;
+  private ?string $branch;
 
   #[ORM\Column(length: 255)]
   #[Groups(['method'])]
@@ -32,13 +34,16 @@ use TraitEntity;
   #[Groups(['method'])]
   private EngineStatus $status = EngineStatus::DRAFT;
 
-  public function getId(): ?int {return $this->id;}
+  public function getId(): ?int
+  {
+    return $this->id;
+  }
 
-  public function getBranch(): ?int
+  public function getBranch(): ?string
   {
     return $this->branch;
   }
-  public function setBranch(?int $b): void
+  public function setBranch(?string $b): void
   {
     $this->branch = $b;
   }

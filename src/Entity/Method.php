@@ -11,16 +11,17 @@ use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: MethodRepository::class)]
 #[ORM\Table(
-    name: 'method',
-    uniqueConstraints: [
-        new ORM\UniqueConstraint(name: 'uniq_code_engine', columns: ['code', 'engine_id'])
-    ]
+  name: 'method',
+  uniqueConstraints: [
+    new ORM\UniqueConstraint(name: 'uniq_code_engine', columns: ['code', 'engine_id'])
+  ]
 )]
-class Method  
+class Method
 {
   use TraitEntity;
 
   #[ORM\Id, ORM\GeneratedValue, ORM\Column(type: 'integer')]
+  #[Groups(["method"])]
   private ?int $id = null;
   #[ORM\ManyToOne(targetEntity: EngineBranch::class)]
   #[Groups(["method"])]
@@ -28,7 +29,7 @@ class Method
 
   #[ORM\Column(length: 255, nullable: true)]
   #[Groups(["method"])]
-  private ?int $insurer = null;
+  private ?string $insurer = null;
 
   #[ORM\Column(length: 255)]
   #[Groups(["method"])]
@@ -65,10 +66,13 @@ class Method
 
   public function __construct()
   {
-     /*  parent::__construct(); */
-      $this->methodLines = new ArrayCollection();
+    /*  parent::__construct(); */
+    $this->methodLines = new ArrayCollection();
   }
-  public function getId(): ?int {return $this->id;}
+  public function getId(): ?int
+  {
+    return $this->id;
+  }
 
   public function getEngine(): ?EngineBranch
   {
@@ -147,40 +151,40 @@ class Method
    */
   public function getMethodLines(): Collection
   {
-      return $this->methodLines;
+    return $this->methodLines;
   }
 
   public function addMethodLine(MethodLine $methodLine): static
   {
-      if (!$this->methodLines->contains($methodLine)) {
-          $this->methodLines->add($methodLine);
-          $methodLine->setMethod($this);
-      }
+    if (!$this->methodLines->contains($methodLine)) {
+      $this->methodLines->add($methodLine);
+      $methodLine->setMethod($this);
+    }
 
-      return $this;
+    return $this;
   }
 
   public function removeMethodLine(MethodLine $methodLine): static
   {
-      if ($this->methodLines->removeElement($methodLine)) {
-          // set the owning side to null (unless already changed)
-          if ($methodLine->getMethod() === $this) {
-              $methodLine->setMethod(null);
-          }
+    if ($this->methodLines->removeElement($methodLine)) {
+      // set the owning side to null (unless already changed)
+      if ($methodLine->getMethod() === $this) {
+        $methodLine->setMethod(null);
       }
+    }
 
-      return $this;
+    return $this;
   }
 
   public function getPublicName(): ?string
   {
-      return $this->publicName;
+    return $this->publicName;
   }
 
   public function setPublicName(?string $publicName): static
   {
-      $this->publicName = $publicName;
+    $this->publicName = $publicName;
 
-      return $this;
+    return $this;
   }
 }

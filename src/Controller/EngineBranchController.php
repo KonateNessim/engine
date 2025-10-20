@@ -73,9 +73,9 @@ class EngineBranchController extends ApiInterface
     return $this->json(['id' => $e->getId()]);
   }
 
-  #[Route('/create', methods: ['POST'])]
+  #[Route('/create/{branch}', methods: ['POST'])]
   #[OA\Post(
-    path: "/admin/engineBranch",
+    path: "/engineBranch/{branch}",
     summary: "Créer un moteur",
     description: "Crée un nouvel EngineBranch",
     requestBody: new OA\RequestBody(
@@ -108,13 +108,13 @@ class EngineBranchController extends ApiInterface
       )
     ]
   )]
-  public function createEngine(Request $r): JsonResponse
+  public function createEngine(Request $r, string $branch): JsonResponse
   {
     $d = json_decode($r->getContent(), true) ?? [];
     $e = new EngineBranch();
     $e->setName($d['name'] ?? 'Engine');
     $e->setDescription($d['description'] ?? null);
-    $e->setBranch((int)($d['branch'] ?? null));
+    $e->setBranch(($d['branch']));
     $e->setStatus(EngineStatus::from($d['status'] ?? 'DRAFT'));
     $this->em->persist($e);
     $this->em->flush();
