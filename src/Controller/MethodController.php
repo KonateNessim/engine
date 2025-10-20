@@ -48,7 +48,7 @@ class MethodController extends ApiInterface
 
   #[Route('/global', methods: ['GET'])]
   #[OA\Get(
-    path: "/admin/method/global",
+    path: "/method/global",
     summary: "Lister les méthodes globales",
     description: "Retourne la liste des Method globales",
     responses: [
@@ -109,12 +109,12 @@ class MethodController extends ApiInterface
   #[Route('/get/one/{id}', methods: ['GET'])]
   #[OA\Get(
     path: "/get/one/{id}",
-    summary: "Lister les méthodes",
-    description: "Retourne la liste des Method par branch",
+    summary: "Détails d’une méthode",
+    description: "Détails d’une méthode",
     responses: [
       new OA\Response(
         response: 200,
-        description: "Liste des Method par branch",
+        description: "Détails d’une méthode",
         content: new OA\JsonContent(
           type: "array",
           items: new OA\Items(

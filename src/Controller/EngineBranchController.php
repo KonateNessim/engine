@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\EngineBranch;
 use App\Enum\EngineStatus;
+use App\Repository\EngineBranchRepository;
 use OpenApi\Attributes as OA;
 
 #[Route('/api/engine/engineBranch')]
@@ -19,7 +20,7 @@ class EngineBranchController extends ApiInterface
 
   #[Route('', methods: ['GET'])]
   #[OA\Get(
-    path: "/admin/engineBranch",
+    path: "/engine/engineBranch",
     summary: "Lister les moteurs",
     description: "Retourne la liste des EngineBranch disponibles",
     responses: [
@@ -44,9 +45,37 @@ class EngineBranchController extends ApiInterface
     return $this->responseData($all, 'method', true);
   }
 
+
+   #[Route('/get/one/{id}', methods: ['GET'])]
+  #[OA\Get(
+    path: "/api/engine/engineBranch/get/one/{id}",
+    summary: "Détails un moteurs",
+    description: "Retourne un moteur",
+    responses: [
+      new OA\Response(
+        response: 200,
+        description: "Moteur trouvé",
+        content: new OA\JsonContent(
+          type: "array",
+          items: new OA\Items(
+            type: "object",
+            properties: [
+              new OA\Property(property: "id", type: "integer", example: 1)
+            ]
+          )
+        )
+      )
+    ]
+  )]
+  public function getOneMethod(EngineBranchRepository $engineBranchRepository,int $id): JsonResponse
+  {
+    $engineBranch = $engineBranchRepository->find($id);
+    return $this->responseData($engineBranch, 'method');
+  }
+
   #[Route('/{id}', methods: ['GET'])]
   #[OA\Get(
-    path: "/admin/engineBranch/{id}",
+    path: "/engine/engineBranch/{id}",
     summary: "Détails d’un moteur",
     description: "Retourne les informations d’un EngineBranch par son identifiant",
     parameters: [
@@ -123,7 +152,7 @@ class EngineBranchController extends ApiInterface
 
   #[Route('/{id}', methods: ['PUT'])]
   #[OA\Put(
-    path: "/admin/engineBranch/{id}",
+    path: "/engine/engineBranch/{id}",
     summary: "Mettre à jour un moteur",
     description: "Met à jour les informations d’un EngineBranch existant",
     parameters: [
@@ -172,7 +201,7 @@ class EngineBranchController extends ApiInterface
 
   #[Route('/{id}', methods: ['DELETE'])]
   #[OA\Delete(
-    path: "/admin/engineBranch/{id}",
+    path: "/engineBranch/{id}",
     summary: "Supprimer un moteur",
     description: "Supprime un EngineBranch par son identifiant",
     parameters: [
