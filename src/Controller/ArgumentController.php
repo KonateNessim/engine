@@ -45,7 +45,7 @@ class ArgumentController extends ApiInterface
 
 
 
-    return $this->responseData($all, 'group1',true);
+    return $this->responseData($all, "argument",true);
   }
 
   #[Route('/{id}', methods: ['GET'])]

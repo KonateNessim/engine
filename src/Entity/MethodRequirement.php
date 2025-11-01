@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\MethodRequirementRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: MethodRequirementRepository::class)]
 class MethodRequirement
@@ -11,26 +12,33 @@ class MethodRequirement
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(["method_requirement"])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Method::class, inversedBy: 'requirements')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[Groups(["method_requirement"])]
     private ?Method $method = null;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(["method_requirement"])]
     private string $label;
 
     #[ORM\ManyToOne(targetEntity: Argument::class)]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[Groups(["method_requirement"])]
     private ?Argument $code = null;
 
     #[ORM\Column(type: 'boolean')]
+    #[Groups(["method_requirement"])]
     private bool $isRequired = true;
 
     #[ORM\Column(type: 'json', nullable: true)]
+    #[Groups(["method_requirement"])]
     private mixed $defaultValue = null;
 
     #[ORM\Column(type: 'json', nullable: true)]
+    #[Groups(["method_requirement"])]
     private ?array $validationRules = null;
 
     // --- Getters & Setters ---

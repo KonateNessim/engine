@@ -58,6 +58,7 @@ class Method
    * @var Collection<int, MethodLine>
    */
   #[ORM\OneToMany(targetEntity: MethodLine::class, mappedBy: 'method')]
+  #[Groups(["method"])]
   private Collection $methodLines;
 
   #[ORM\Column(length: 255, nullable: true)]

@@ -4,30 +4,37 @@ namespace App\Entity;
 
 use App\Repository\MethodLineRepository;
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: MethodLineRepository::class)]
 class MethodLine
 {
   #[ORM\Id, ORM\GeneratedValue, ORM\Column(type: 'integer')]
+  #[Groups(["method"])]
   private ?int $id = null;
 
   #[ORM\Column(type: 'integer')]
+  #[Groups(["method"])]
   private int $orderIndex = 1;
 
   #[ORM\Column(type: 'text', nullable: true)]
+  #[Groups(["method"])]
   private ?string $expression = null;
 
   #[ORM\Column(length: 100, nullable: true)]
+  #[Groups(["method"])]
   private ?string $resultVariable = null;
 
   #[ORM\Column(length: 50, nullable: true)]
+  #[Groups(["method"])]
   private ?string $lineType = 'calculation';
 
   #[ORM\Column(type: 'json', nullable: true)]
+  #[Groups(["method"])]
   private ?array $metadata = null;
 
   #[ORM\Column(type: 'datetime_immutable')]
+  #[Groups(["method"])]
   private \DateTimeImmutable $createdAt;
 
   #[ORM\ManyToOne(inversedBy: 'methodLines')]
