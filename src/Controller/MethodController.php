@@ -35,7 +35,7 @@ class MethodController extends ApiInterface
                 in: "path",
                 required: true,
                 description: "Identifiant de la branche (engine)",
-                schema: new OA\Schema(type: "integer", example: 1)
+                schema: new OA\Schema(type: "string", example: 1)
             )
         ],
         responses: [
@@ -61,7 +61,7 @@ class MethodController extends ApiInterface
             new OA\Response(response: 404, description: "Branche non trouvée")
         ]
     )]
-    public function list(MethodRepository $methodRepository, int $branch): JsonResponse
+    public function list(MethodRepository $methodRepository, string $branch): JsonResponse
     {
         $all = $methodRepository->findBy([
             'engine' => $branch
