@@ -136,7 +136,7 @@ class EngineBranchController extends ApiInterface
             new OA\Response(response: 404, description: "Branche non trouvée ou aucun moteur associé")
         ]
     )]
-    public function listByBranch($uidBranch, EngineBranchRepository $engineBranchRepository): JsonResponse
+    public function listByBranch(string $uidBranch, EngineBranchRepository $engineBranchRepository): JsonResponse
     {
         $e = $engineBranchRepository->findBy(['branch' => $uidBranch]);
         return $this->responseData($e, 'method', true);
