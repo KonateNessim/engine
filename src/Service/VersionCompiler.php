@@ -26,10 +26,10 @@ class VersionCompiler
       $conditions = [];
       foreach ($groups as $g) {
         $conds = $this->em->getRepository(Condition::class)
-          ->findBy(['group' => $g], ['orderIndex' => 'ASC']);
+          ->findBy(['groupCondition' => $g], ['orderIndex' => 'ASC']);
 
         $conditions[] = [
-          'group' => $g->getId(),
+          'groupCondition' => $g->getId(),
           'logic' => $g->getLogicOperator(),
           'conditions' => array_map(fn($c) => [
             'left' => $c->getLeftArgument()?->getName(),

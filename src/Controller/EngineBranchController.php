@@ -220,6 +220,97 @@ class EngineBranchController extends ApiInterface
         $this->em->flush();
         return $this->responseData($e, 'method', true);
     }
+    /**
+     * Crée un nouveau EngineBranch pour une branche donnée
+     */
+    #[Route('/create', methods: ['POST'])]
+    #[OA\Post(
+        path: "/api/engine/engineBranch/create",
+        summary: "Créer un nouveau moteur",
+        description: "Crée un nouvel EngineBranch associé à une branche spécifique",
+        tags: ['EngineBranch'],
+        parameters: [
+            new OA\Parameter(
+                name: "branch", 
+                in: "path", 
+                required: true, 
+                description: "UID de la branche à laquelle associer le moteur",
+                schema: new OA\Schema(type: "string", example: "uIII")
+            )
+        ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            description: "Données du nouveau moteur à créer",
+            content: new OA\JsonContent(
+                type: "object",
+                required: ["name"],
+                properties: [
+                    new OA\Property(
+                        property: "name", 
+                        type: "string", 
+                        example: "Main Engine",
+                        description: "Nom du moteur (obligatoire)"
+                    ),
+                    new OA\Property(
+                        property: "branch", 
+                        type: "string", 
+                        example: "UIDD",
+                        description: "UID de la branche (obligatoire)"
+                    ),
+                    new OA\Property(
+                        property: "description", 
+                        type: "string", 
+                        nullable: true, 
+                        example: "Moteur principal pour la production",
+                        description: "Description détaillée du moteur (optionnel)"
+                    ),
+                    new OA\Property(
+                        property: "status",
+                        type: "string",
+                        enum: ["DRAFT", "ACTIVE", "DEPRECATED", "ARCHIVED"],
+                        example: "DRAFT",
+                        description: "Statut initial du moteur (par défaut: DRAFT)"
+                    )
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 201,
+                description: "Moteur créé avec succès",
+                content: new OA\JsonContent(
+                    type: "object",
+                    properties: [
+                        new OA\Property(property: "id", type: "integer", example: 1, description: "ID du moteur créé"),
+                        new OA\Property(property: "name", type: "string", example: "Main Engine", description: "Nom du moteur"),
+                        new OA\Property(property: "description", type: "string", nullable: true, example: "Moteur principal", description: "Description du moteur"),
+                        new OA\Property(property: "branch", type: "string", example: "uIII", description: "UID de la branche"),
+                        new OA\Property(property: "status", type: "string", example: "DRAFT", description: "Statut du moteur")
+                    ]
+                )
+            ),
+            new OA\Response(response: 400, description: "Données invalides")
+        ]
+    )]
+    public function createEngineSimple(Request $r): JsonResponse
+    {
+        $d = json_decode($r->getContent(), true) ?? [];
+        $e = new EngineBranch();
+        $e->setName($d['name'] ?? 'Engine');
+        $e->setDescription($d['description'] ?? null);
+        $e->setBranch($d['branch']);
+        $e->setStatus(EngineStatus::from($d['status'] ?? 'DRAFT'));
+        $this->em->persist($e);
+        $this->em->flush();
+        return $this->json([
+            'id' => $e->getId(),
+            'name' => $e->getName(),
+            'description' => $e->getDescription(),
+            'branch' => $e->getBranch(),
+            'status' => $e->getStatus()->value
+        ], 201 );
+       // return $this->responseData($e, 'method', true);
+    }
 
     /**
      * Met à jour un EngineBranch existant

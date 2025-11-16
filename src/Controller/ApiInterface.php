@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Service\PaginationService;
+use App\Service\SnapshotManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,7 +18,8 @@ class ApiInterface extends AbstractController
         private SerializerInterface $serializer,
         private ValidatorInterface $validator,
         protected EntityManagerInterface $em,
-        private PaginationService $paginate
+        private PaginationService $paginate,
+        private SnapshotManager $snapshots
     ) {}
 
     private int $statusCode = 200;

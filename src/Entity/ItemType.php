@@ -10,27 +10,27 @@ use Symfony\Component\Serializer\Attribute\Groups;
 class ItemType
 {
   #[ORM\Id, ORM\GeneratedValue, ORM\Column(type: 'integer')]
-  #[Groups(["group1"])]
+  #[Groups(["group1","methodLine"])]
   private ?int $id = null;
 
   #[ORM\Column(length: 100)]
-  #[Groups(["group1"])]
+  #[Groups(["group1","methodLine"])]
   private string $name;
 
   #[ORM\Column(length: 255)]
-  #[Groups(["group1"])]
+  #[Groups(["group1","methodLine"])]
   private string $label;
 
   #[ORM\Column(type: 'json', nullable: true)]
-  #[Groups(["group1"])]
+  #[Groups(["group1","methodLine"])]
   private ?array $options = null;
 
   #[ORM\Column(type: 'json', nullable: true)]
-  #[Groups(["group1"])]
+  #[Groups(["group1","methodLine"])]
   private ?array $validation = null;
 
   #[ORM\Column(length: 50)]
-  #[Groups(["group1"])]
+  #[Groups(["group1","methodLine"])]
   private string $inputType;
 
   public function getId(): ?int

@@ -199,7 +199,7 @@ class AppFixtures extends Fixture
         $em->flush();
 
         $c21 = new Condition();
-            $c21->setGroup($cg2);
+            $c21->setGroupCondition($cg2);
             $c21->setLeftArgument($vehiculeUsage);
             $c21->setOperator(OperatorType::Equal);
             $c21->setRightValue('particulier');
@@ -207,7 +207,7 @@ class AppFixtures extends Fixture
         $em->persist($c21);
 
         $c22 = new Condition();
-            $c22->setGroup($cg2);
+            $c22->setGroupCondition($cg2);
             $c22->setLeftArgument($assureAge);
             $c22->setOperator(OperatorType::LessThan);
             $c22->setRightValue('30');
@@ -285,7 +285,7 @@ class AppFixtures extends Fixture
         $em->flush();
 
         $cS1 = new Condition();
-            $cS1->setGroup($cgS1);
+            $cS1->setGroupCondition($cgS1);
             $cS1->setLeftArgument($avenantType);
             $cS1->setOperator(OperatorType::Equal);
             $cS1->setRightValue('ajout');
@@ -352,7 +352,7 @@ class AppFixtures extends Fixture
         $em->flush();
 
         $cV1 = new Condition();
-        $cV1->setGroup($cgV1);
+        $cV1->setGroupCondition($cgV1);
         $cV1->setLeftArgument($voyDestRisque);
         $cV1->setOperator(OperatorType::Equal);
         $cV1->setRightValue('1');

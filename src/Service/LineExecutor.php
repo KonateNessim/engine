@@ -58,10 +58,10 @@ class LineExecutor
 
           if ($groupLogic === 'AND') {
             $groupResult = $groupResult && $res;
-            if (!$res) break; // early exit
+            if (!$res) break; 
           } else {
             $groupResult = $groupResult || $res;
-            if ($res) break; // early exit
+            if ($res) break; 
           }
         }
 

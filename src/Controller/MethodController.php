@@ -53,9 +53,11 @@ class MethodController extends ApiInterface
   )]
   public function listGlobal(MethodRepository $methodRepository): JsonResponse
   {
+
+   /*  dd(""); */
     $all = $methodRepository->findBy([
-      'engine' => null,
-      'insurer' => null
+      /* 'engine' => null,
+      'insurer' => null */
     ]);
     return $this->responseData($all, 'method', true);
   }

@@ -3,15 +3,18 @@
 namespace App\Entity\Common;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 trait TraitEntity
 {
 
 
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    #[Groups(['methodLine'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    #[Groups(['methodLine'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column(type: 'integer', nullable: true)]
@@ -21,6 +24,7 @@ trait TraitEntity
     private ?int $updatedBy = null;
 
     #[ORM\Column(type: 'boolean')]
+    #[Groups(['methodLine'])]
     private bool $isActive = true;
 
     public function initializeTimestamps(): void

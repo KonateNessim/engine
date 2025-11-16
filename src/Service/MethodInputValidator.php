@@ -39,7 +39,7 @@ class MethodInputValidator
         foreach ($requirements as $req) {
             $code = $req->getCode();
             $label = $req->getLabel();
-            $dataType = $req->getDataType()?->getName() ?? 'mixed';
+           // $dataType = $req->getDataType()?->getName() ?? 'mixed';
             $required = $req->isRequired();
             $defaultValue = $req->getDefaultValue();
             $rules = $req->getValidationRules() ?? [];
@@ -47,7 +47,7 @@ class MethodInputValidator
             $hasValue = array_key_exists($code, $inputs);
             $value = $hasValue ? $inputs[$code] : null;
 
-            // 1️⃣ Présence obligatoire
+            // 1️ Présence obligatoire
             if ($required && !$hasValue) {
                 if ($defaultValue !== null) {
                     $inputs[$code] = $defaultValue;
@@ -57,19 +57,18 @@ class MethodInputValidator
                 }
             }
 
-            // 2️⃣ Validation du type (si valeur présente)
-            if ($hasValue && !$this->isTypeValid($value, $dataType)) {
+            // 2️ Validation du type (si valeur présente)
+            if ($hasValue && !$this->isTypeValid($value)) {
                 $errors[] = sprintf(
                     "Type invalide pour '%s' (%s) : attendu %s, reçu %s.",
                     $label,
                     $code,
-                    $dataType,
                     get_debug_type($value)
                 );
                 continue;
             }
 
-            // 3️⃣ Validation des règles (min, max, regex, etc.)
+            // 3 Validation des règles (min, max, regex, etc.)
             if ($hasValue && $rules) {
                 $error = $this->validateRules($code, $value, $rules);
                 if ($error) {

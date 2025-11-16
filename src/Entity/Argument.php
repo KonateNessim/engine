@@ -10,35 +10,35 @@ use Symfony\Component\Serializer\Attribute\Groups;
 class Argument
 {
   #[ORM\Id, ORM\GeneratedValue, ORM\Column(type: 'integer')]
-  #[Groups(["argument","method_requirement"])]
+  #[Groups(["argument","method_requirement","methodLine"])]
   private ?int $id = null;
 
   #[ORM\Column(length: 100)]
-  #[Groups(["argument","method_requirement"])]
+  #[Groups(["argument","method_requirement","methodLine"])]
   private string $name;
 
   #[ORM\Column(length: 255, nullable: true)]
-  #[Groups(["argument","method_requirement"])]
+  #[Groups(["argument","method_requirement","methodLine"])]
   private ?string $label = null;
 
   #[ORM\ManyToOne(targetEntity: DataType::class)]
-  #[Groups(["argument"])]
+  #[Groups(["argument","method_requirement","methodLine"])]
   private ?DataType $dataType = null;
 
   #[ORM\ManyToOne(targetEntity: ItemType::class)]
-  #[Groups(["argument"])]
+  #[Groups(["argument","method_requirement","methodLine"])]
   private ?ItemType $itemType = null;
 
   #[ORM\Column(type: 'boolean')]
-  #[Groups(["argument"])]
+  #[Groups(["argument","method_requirement","methodLine"])]
   private bool $isRequired = true;
 
   #[ORM\Column(type: 'json', nullable: true)]
-  #[Groups(["argument"])]
+  #[Groups(["argument","method_requirement","methodLine"])]
   private mixed $defaultValue = null;
 
   #[ORM\Column(type: 'json', nullable: true)]
-  #[Groups(["argument"])]
+  #[Groups(["argument","method_requirement","methodLine"])]
   private ?array $constraints = null;
 
   public function getId(): ?int

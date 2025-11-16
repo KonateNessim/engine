@@ -12,11 +12,16 @@ class SnapshotManager
     /**
      * Crée un snapshot de la ligne (line + places + groups/conditions).
      */
-    public function createSnapshot(MethodLine $line): MethodLineVersion
+    public function createSnapshot(MethodLine $line, ?string $versionName = null): MethodLineVersion
     {
         $last = $this->em->getRepository(MethodLineVersion::class)
             ->findOneBy(['line' => $line], ['versionNumber' => 'DESC']);
         $next = ($last?->getVersionNumber() ?? 0) + 1;
+
+        // Génère automatiquement un nom de version si non fourni
+        if ($versionName === null) {
+            $versionName = $this->generateVersionName($next, $last?->getVersionName());
+        }
 
         $places = $this->em->getRepository(Place::class)
             ->findBy(['line' => $line], ['orderIndex' => 'ASC']);
@@ -26,7 +31,7 @@ class SnapshotManager
         $groupJson = [];
         foreach ($groups as $g) {
             $conds = $this->em->getRepository(Condition::class)
-                ->findBy(['group' => $g], ['orderIndex' => 'ASC']);
+                ->findBy(['groupCondition' => $g], ['orderIndex' => 'ASC']);
             $groupJson[] = [
                 'logic' => $g->getLogicOperator(),
                 'order' => $g->getOrderIndex(),
@@ -59,12 +64,44 @@ class SnapshotManager
         $ver = new MethodLineVersion();
         $ver->setLine($line);
         $ver->setVersionNumber($next);
+        $ver->setVersionName($versionName);
         $ver->setSnapshotJson($snapshot);
+        $ver->setCreatedAt(new \DateTimeImmutable());
 
         $this->em->persist($ver);
         $this->em->flush();
 
         return $ver;
+    }
+
+    /**
+     * Génère automatiquement un nom de version
+     */
+    private function generateVersionName(int $versionNumber, ?string $lastVersionName = null): string
+    {
+        // Si c'est la première version
+        if ($versionNumber === 1) {
+            return 'v1.0';
+        }
+
+        // Si on a une version précédente, on l'incrémente
+        if ($lastVersionName && preg_match('/^v(\d+)\.(\d+)$/', $lastVersionName, $matches)) {
+            $major = (int)$matches[1];
+            $minor = (int)$matches[2] + 1;
+            return "v{$major}.{$minor}";
+        }
+
+        // Fallback : utilise le numéro de version
+        return "v1.{$versionNumber}";
+    }
+
+    /**
+     * Met à jour le nom d'une version existante
+     */
+    public function updateVersionName(MethodLineVersion $version, string $versionName): void
+    {
+        $version->setVersionName($versionName);
+        $this->em->flush();
     }
 
     /**
@@ -113,7 +150,7 @@ class SnapshotManager
             $this->em->persist($gr);
             foreach ($g['conditions'] as $c) {
                 $co = new Condition();
-                $co->setGroup($gr);
+                $co->setGroupCondition($gr);
                 $co->setOrderIndex($c['order']);
                 if ($c['left']) {
                     $arg = $this->em->getRepository(Argument::class)->findOneBy(['name' => $c['left']]);

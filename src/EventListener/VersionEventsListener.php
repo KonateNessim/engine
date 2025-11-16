@@ -34,7 +34,7 @@ class VersionEventsListener
 
   private function handle(object $entity): void
   {
-    // 🔸 Cas 1 : Si c’est une ligne ou un élément de ligne (place, condition, etc.)
+
     if (
       $entity instanceof MethodLine ||
       $entity instanceof Place ||
@@ -42,15 +42,12 @@ class VersionEventsListener
       $entity instanceof Condition
     ) {
 
-      // Je récupère la ligne concernée
       $line = $entity instanceof MethodLine
         ? $entity
-        : ($entity->getLine() ?? $entity->getGroup()?->getLine());
+        : ($entity->getLine() ?? $entity->getGroupCondition()?->getLine());
 
       if ($line) {
         $this->snap->createSnapshot($line);
-
-        // Invalide le cache compilé de la méthode
         $method = $line->getMethod();
         if ($method instanceof Method) {
           $this->cache->invalidate($method->getId());
@@ -58,7 +55,6 @@ class VersionEventsListener
       }
     }
 
-    // 🔸 Cas 2 : Si c’est directement une méthode (on la purge du cache)
     elseif ($entity instanceof Method) {
       $this->cache->invalidate($entity->getId());
     }
