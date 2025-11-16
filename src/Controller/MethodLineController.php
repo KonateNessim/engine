@@ -7,6 +7,7 @@ use App\Entity\Condition;
 use App\Entity\ConditionGroup;
 use App\Entity\Method;
 use App\Entity\MethodLine;
+use App\Entity\MethodLineVersion;
 use App\Entity\Place;
 use App\Enum\OperatorType;
 use App\Repository\MethodLineRepository;
@@ -185,7 +186,7 @@ class MethodLineController extends ApiInterface
         return $this->json(['id' => $line->getId()]);
     }
 
-    
+
     #[Route('/{id}/line/full', methods: ['PUT'])]
     #[OA\Put(summary: "Mettre à jour une ligne complète avec places et conditions")]
     #[OA\RequestBody(
@@ -330,5 +331,48 @@ class MethodLineController extends ApiInterface
                 'message' => $e->getMessage()
             ], 500);
         }
+    }
+
+
+     #[Route('/line/{id}/snapshots', methods: ['GET'])]
+    #[OA\Get(summary: "Lister les snapshots d'une ligne")]
+    #[OA\Response(response: 200, description: "Liste des snapshots renvoyée")]
+    public function listSnapshots(int $id): JsonResponse
+    {
+        $line = $this->em->find(MethodLine::class, $id);
+        if (!$line) return $this->json(['error' => 'line not found'], 404);
+
+        $snaps = $this->em->getRepository(MethodLineVersion::class)
+            ->findBy(['line' => $line], ['versionNumber' => 'DESC']);
+
+        return $this->json(array_map(fn($s) => [
+            'version' => $s->getVersionNumber(),
+            'snapshot' => $s->getSnapshotJson(),
+            'createdAt' => $s->getCreatedAt()?->format('c'),
+        ], $snaps));
+    }
+
+    
+    #[Route('/line/{id}/rollback/{version}', methods: ['POST'])]
+    #[OA\Post(summary: "Restaurer une version précédente d'une ligne")]
+    #[OA\Response(response: 200, description: "Version restaurée avec succès")]
+    public function rollbackLine(int $id, int $version): JsonResponse
+    {
+        $line = $this->em->find(MethodLine::class, $id);
+        if (!$line) return $this->json(['error' => 'line not found'], 404);
+
+        $snap = $this->em->getRepository(MethodLineVersion::class)
+            ->findOneBy(['line' => $line, 'versionNumber' => $version]);
+        if (!$snap) return $this->json(['error' => 'snapshot not found'], 404);
+
+        $data = $snap->getSnapshotJson();
+        $line->setOrderIndex($data['line']['orderIndex']);
+        $line->setResultVariable($data['line']['resultVariable']);
+        $line->setLineType($data['line']['lineType']);
+        $line->setExpression($data['line']['expression']);
+        $line->setMetadata($data['line']['metadata'] ?? null);
+        $this->em->flush();
+
+        return $this->json(['restored' => true, 'lineId' => $id, 'version' => $version]);
     }
 }
