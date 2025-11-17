@@ -58,6 +58,32 @@ class MethodLineController extends ApiInterface
     }
 
 
+    #[Route('/{id}', methods: ['GET'])]
+    #[OA\Get(
+        path: "/api/engine/methodLine/{id}",
+        summary: "Retourne une ligne de.visitMethodLine",
+        description: "Retourne une ligne de.visitMethodLine",
+        tags: ['MethodLine'],
+        parameters: [
+            new OA\Parameter(
+                name: "id",
+                in: "path",
+                description: "Identifiant unique de la ligne de méthode",
+                required: true,
+                schema: new OA\Schema(type: "integer", example: 1)
+            )
+        ]
+    )]
+    public function getOne($id)
+    {
+        $line = $this->em->getRepository(MethodLine::class)->find($id);
+        if (!$line) {
+            return $this->json(['error' => 'MethodLine not found'], 404);
+        }
+        return $this->responseData($line, 'methodLine');
+    }
+
+
     #[Route('/Method/{id}', methods: ['GET'])]
     #[OA\Get(
         path: "/api/engine/methodLine/Method/{id}",
